@@ -16,42 +16,42 @@ public class AddressController {
     AddressService addressService;
 
     @PostMapping("/addAddress")
-    public ResponseEntity<String> addAddress(@RequestBody AddressDTO dto){
+    public ResponseEntity<String> addAddress(@RequestBody AddressDTO dto) {
         return addressService.addAddress(dto);
     }
 
     @PutMapping("/updateAddress/{address_id}")
-    public AddressDTO updateAddress(@PathVariable int address_id, @RequestBody AddressDTO addressDTO){
+    public ResponseEntity<AddressDTO> updateAddress(@PathVariable int address_id, @RequestBody AddressDTO addressDTO) {
         return addressService.updateAddress(address_id, addressDTO);
     }
 
     @DeleteMapping("/deleteAddress/{address_id}")
-    public ResponseEntity<String> deleteAddress(@PathVariable int address_id){
+    public ResponseEntity<String> deleteAddress(@PathVariable int address_id) {
         return addressService.deleteAddress(address_id);
     }
 
-    @GetMapping("/findAddressById")
-    public AddressDTO findAddressById(int address_id){
+    @GetMapping("/findAddressById/{address_id}")
+    public ResponseEntity<AddressDTO> findAddressById(@PathVariable int address_id) {
         return addressService.findAddressById(address_id);
     }
 
-    @GetMapping("/findAllAddressByStreet")
-    public List<AddressDTO> findAllAddressByStreet(String street){
+    @GetMapping("/findAllAddressByStreet/{street}")
+    public ResponseEntity<List<AddressDTO>> findAllAddressByStreet(@PathVariable String street) {
         return addressService.findByStreetIgnoreCase(street);
     }
 
-    @GetMapping("/findAllAddressByCity")
-    public List<AddressDTO> findAllAddressByCity(String city){
+    @GetMapping("/findAllAddressByCity/{city}")
+    public ResponseEntity<List<AddressDTO>> findAllAddressByCity(@PathVariable String city) {
         return addressService.findByCityIgnoreCase(city);
     }
 
-    @GetMapping("/findAllAddressByCountry")
-    public List<AddressDTO> findAllAddressByCountry(String country){
+    @GetMapping("/findAllAddressByCountry/{country}")
+    public ResponseEntity<List<AddressDTO>> findAllAddressByCountry(@PathVariable String country) {
         return addressService.findByCountryIgnoreCase(country);
     }
 
     @GetMapping("/viewAllAddress")
-    public List<AddressDTO> viewAllAddress(){
+    public ResponseEntity<List<AddressDTO>> viewAllAddress() {
         return addressService.viewAllAddress();
     }
 }

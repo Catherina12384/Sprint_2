@@ -1,6 +1,5 @@
 package com.SpaceFinders.Sprint_2.Controller;
 
-import com.SpaceFinders.Sprint_2.Utility.AddressNotFoundException;
 import com.SpaceFinders.Sprint_2.Utility.AlreadyExistsException;
 import com.SpaceFinders.Sprint_2.Utility.DataNotFoundException;
 
@@ -14,11 +13,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Hidden
 @RestControllerAdvice
 public class ExceptionHandlerController {
-    @ExceptionHandler(AddressNotFoundException.class)
-    public ResponseEntity<String> handleAddressException(AddressNotFoundException e){
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-    }
-
     @ExceptionHandler(DataNotFoundException.class)
     public ResponseEntity<String> handleDataNotFoundException(DataNotFoundException e){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body((e.getMessage()));

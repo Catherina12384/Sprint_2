@@ -23,47 +23,64 @@ public class UserController {
     @Autowired
     UserServices userServices;
 
-
-    @GetMapping("/hi")
-    String sayHi(){
-        return "hi";
-    }
+//    @GetMapping("/hi")
+//    public String sayHi(){
+//        return "hi";
+//    }
 
     @PostMapping("/login")
-    boolean userLogin(@RequestParam(name = "username") String username, @RequestParam(name = "password") String password){
+    public ResponseEntity<String> userLogin(
+            @RequestParam(name = "username") String username,
+            @RequestParam(name = "password") String password){
         return userServices.UserLoginServices(username, password);
     }
 
     @PostMapping("/signup")
-    ResponseEntity<Users>  userSignup(@RequestBody UserDTO user){
-        return new ResponseEntity<>(userServices.UserSignupServices(user), HttpStatus.OK);
+    public ResponseEntity<Users> userSignup(@RequestBody UserDTO user){
+        return userServices.UserSignupServices(user);
     }
 
     @DeleteMapping("/deleteAccount")
-    String deleteUser(@RequestParam(name = "username") String username, @RequestParam(name = "password") String password){
+    public ResponseEntity<String> deleteUser(
+            @RequestParam(name = "username") String username,
+            @RequestParam(name = "password") String password){
         return userServices.UserDeleteServices(username, password);
     }
 
     @PutMapping("/updateUserDetails")
-    String userDetailsUpdate(@RequestParam("username") String username, @RequestBody UserDTO userDto){
+    public ResponseEntity<String> userDetailsUpdate(
+            @RequestParam("username") String username,
+            @RequestBody UserDTO userDto){
         return userServices.UserDetailsUpdate(username, userDto);
     }
 
-
     @GetMapping("/getOtp")
-    String getOtp(HttpServletRequest request) throws IOException {
+    public ResponseEntity<String> getOtp(HttpServletRequest request) throws IOException {
         String msg = "Your otp is: 4352";
         int port = 8089;
         String ipAddress = IpUtility.extractIp(request);
-        System.out.println("Request form IP: " + ipAddress);
+        System.out.println("Request from IP: " + ipAddress);
+
         if(IpUtility.sendOtp(ipAddress, port, msg, true) == 200) {
-            return "OTP send successfully";
+            return ResponseEntity.ok("OTP sent successfully");
         }
-        return "OTP send Failed";
+        return ResponseEntity.status(500).body("OTP send failed");
     }
 
     @PostMapping("/forgetPassword")
-    String forgetPassword(@RequestParam("username") String username, @RequestParam("newPassword") String newPassword){
+    public ResponseEntity<String> forgetPassword(
+            @RequestParam("username") String username,
+            @RequestParam("newPassword") String newPassword){
         return userServices.UserForgetPasswordService(username, newPassword);
+    }
+
+    @GetMapping("/findByEmail")
+    public ResponseEntity<Users> findUserByEmail(@RequestParam("email") String email){
+        return userServices.findUserByEmail(email);
+    }
+
+    @GetMapping("/findByMobileNumber")
+    public ResponseEntity<Users> findUserByMobileNumber(@RequestParam("mobileNumber") String mobileNumber){
+        return userServices.findUserByMobileNumber(mobileNumber);
     }
 }

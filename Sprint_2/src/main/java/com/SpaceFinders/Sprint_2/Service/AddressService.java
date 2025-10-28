@@ -3,7 +3,7 @@ package com.SpaceFinders.Sprint_2.Service;
 import com.SpaceFinders.Sprint_2.DTO.AddressDTO;
 import com.SpaceFinders.Sprint_2.Entity.Address;
 import com.SpaceFinders.Sprint_2.Repository.AddressRepository;
-import com.SpaceFinders.Sprint_2.Utility.AddressNotFoundException;
+import com.SpaceFinders.Sprint_2.Utility.DataNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,15 +46,15 @@ public class AddressService {
         return dtos;
     }
 
-    public ResponseEntity<String> addAddress(AddressDTO dto){
+    public ResponseEntity<String> addAddress(AddressDTO dto) {
         Address address = convertToEntity(dto);
         addressRepository.save(address);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body("Address has been added successfully");
+        return ResponseEntity.status(HttpStatus.CREATED).body("Address has been added successfully");
     }
 
-    public AddressDTO updateAddress(int address_id, AddressDTO dto){
+    public ResponseEntity<AddressDTO> updateAddress(int address_id, AddressDTO dto) {
         Optional<Address> addressDetails = addressRepository.findById(address_id);
-        if(addressDetails.isPresent()){
+        if (addressDetails.isPresent()) {
             Address address = addressDetails.get();
             address.setBuilding_no(dto.getBuilding_no());
             address.setStreet(dto.getStreet());
@@ -63,43 +63,59 @@ public class AddressService {
             address.setPostal_code(dto.getPostal_code());
 
             Address updatedAddress = addressRepository.save(address);
-            return convertToDTO(updatedAddress);
+            return ResponseEntity.ok(convertToDTO(updatedAddress));
+        } else {
+            throw new DataNotFoundException("Address not found for id " + address_id + " to update");
         }
-        else throw new AddressNotFoundException("Address Not Found for id " + address_id +" to update");
     }
 
-    public ResponseEntity<String> deleteAddress(int address_id){
-        if(addressRepository.existsById(address_id)){
+    public ResponseEntity<String> deleteAddress(int address_id) {
+        if (addressRepository.existsById(address_id)) {
             addressRepository.deleteById(address_id);
-            return ResponseEntity.status(HttpStatus.FOUND).body("The address has been deleted successfully");
+            return ResponseEntity.ok("The address has been deleted successfully");
+        } else {
+            throw new DataNotFoundException("Unable to delete address with id " + address_id);
         }
-        else throw new AddressNotFoundException("Unable to delete id " + address_id);
     }
 
-    public List<AddressDTO> viewAllAddress(){
-        return convertToDTOList(addressRepository.findAll());
-    }
-
-    public AddressDTO findAddressById(int address_id){
-        Optional<Address> address= addressRepository.findById(address_id);
-        if (address.isPresent()){
-            return convertToDTO(address.get());
+    public ResponseEntity<List<AddressDTO>> viewAllAddress() {
+        List<AddressDTO> addressList = convertToDTOList(addressRepository.findAll());
+        if (addressList.isEmpty()) {
+            throw new DataNotFoundException("No addresses found in the system");
         }
-        else throw new AddressNotFoundException("Address " + address_id + "not Found");
+        return ResponseEntity.ok(addressList);
     }
 
-    public List<AddressDTO> findByStreetIgnoreCase(String street){
-        List<Address> address = addressRepository.findByStreetIgnoreCase(street);
-        return convertToDTOList(address);
+    public ResponseEntity<AddressDTO> findAddressById(int address_id) {
+        Optional<Address> address = addressRepository.findById(address_id);
+        if (address.isPresent()) {
+            return ResponseEntity.ok(convertToDTO(address.get()));
+        } else {
+            throw new DataNotFoundException("Address with id " + address_id + " not found");
+        }
     }
 
-    public List<AddressDTO> findByCityIgnoreCase(String city){
-        List<Address> address = addressRepository.findByCityIgnoreCase(city);
-        return convertToDTOList(address);
+    public ResponseEntity<List<AddressDTO>> findByStreetIgnoreCase(String street) {
+        List<Address> addressList = addressRepository.findByStreetIgnoreCase(street);
+        if (addressList.isEmpty()) {
+            throw new DataNotFoundException("No addresses found for street: " + street);
+        }
+        return ResponseEntity.ok(convertToDTOList(addressList));
     }
 
-    public List<AddressDTO> findByCountryIgnoreCase(String country){
-        List<Address> address = addressRepository.findByCountryIgnoreCase(country);
-        return convertToDTOList(address);
+    public ResponseEntity<List<AddressDTO>> findByCityIgnoreCase(String city) {
+        List<Address> addressList = addressRepository.findByCityIgnoreCase(city);
+        if (addressList.isEmpty()) {
+            throw new DataNotFoundException("No addresses found for city: " + city);
+        }
+        return ResponseEntity.ok(convertToDTOList(addressList));
+    }
+
+    public ResponseEntity<List<AddressDTO>> findByCountryIgnoreCase(String country) {
+        List<Address> addressList = addressRepository.findByCountryIgnoreCase(country);
+        if (addressList.isEmpty()) {
+            throw new DataNotFoundException("No addresses found for country: " + country);
+        }
+        return ResponseEntity.ok(convertToDTOList(addressList));
     }
 }

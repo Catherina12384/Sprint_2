@@ -5,9 +5,10 @@ import com.SpaceFinders.Sprint_2.Utility.AmenityStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AmenitiesRepository extends JpaRepository<Amenities, Integer> {
-    List<Amenities> findByAmenityStatus(AmenityStatus amenityStatus);
-    //    AmenitiesDTO findAmenityName(String amenityName);
-    boolean existsByAmenityName(String amenityName);
+    boolean existsByAmenityNameIgnoreCase(String amenityName);
+    Optional<Amenities> findByAmenityNameIgnoreCase(String amenityName);
+    List<Amenities> findByAmenityStatus(boolean amenityStatus);
 }

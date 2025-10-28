@@ -14,13 +14,13 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Integer>{
     List<Complaint> findByStatus(ComplaintsEnum.Status status);
 
     // Find by status and exclude another status
-    List<Complaint> findByStatusAndStatusNot(ComplaintsEnum.Status status, ComplaintsEnum.Status excludeStatus);
+    List<Complaint> findByStatusAndStatusNotClosed(ComplaintsEnum.Status status, ComplaintsEnum.Status excludeStatus);
 
     // Find by severity excluding closed complaints
-    List<Complaint> findBySeverityAndStatusNot(ComplaintsEnum.Severity severity, ComplaintsEnum.Status excludeStatus);
+    List<Complaint> findBySeverityAndStatusNotClosed(ComplaintsEnum.Severity severity, ComplaintsEnum.Status excludeStatus);
 
     // Find by user ID excluding closed complaints
-    List<Complaint> findByUserIdAndStatusNot(int userId, ComplaintsEnum.Status excludeStatus);
+    List<Complaint> findByUserIdAndStatusNotClosed(int userId, ComplaintsEnum.Status excludeStatus);
 
 	
 	

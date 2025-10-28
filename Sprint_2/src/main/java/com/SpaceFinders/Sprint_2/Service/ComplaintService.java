@@ -118,7 +118,7 @@ public class ComplaintService {
             );
         }
 
-        List<Complaint> complaints = cp.findByStatusAndStatusNot(statusEnum, ComplaintsEnum.Status.closed);
+        List<Complaint> complaints = cp.findByStatusAndStatusNotClosed(statusEnum, ComplaintsEnum.Status.closed);
 
         if (complaints.isEmpty()) {
             throw new DataNotFoundException("No open complaints found with status: " + status);
@@ -138,7 +138,7 @@ public class ComplaintService {
             );
         }
 
-        List<Complaint> complaints = cp.findBySeverityAndStatusNot(severityEnum, ComplaintsEnum.Status.closed);
+        List<Complaint> complaints = cp.findBySeverityAndStatusNotClosed(severityEnum, ComplaintsEnum.Status.closed);
 
         if (complaints.isEmpty()) {
             throw new DataNotFoundException("No open complaints found with severity: " + severity);
@@ -148,20 +148,10 @@ public class ComplaintService {
     }
 
     public ResponseEntity<List<Complaint>> getComplaintsByUserId(int userId) {
-        List<Complaint> complaints = cp.findByUserIdAndStatusNot(userId, ComplaintsEnum.Status.closed);
+        List<Complaint> complaints = cp.findByUserIdAndStatusNotClosed(userId, ComplaintsEnum.Status.closed);
 
         if (complaints.isEmpty()) {
             throw new DataNotFoundException("No open complaints found for user id: " + userId);
-        }
-
-        return ResponseEntity.ok(complaints);
-    }
-
-    public ResponseEntity<List<Complaint>> getOpenComplaints() {
-        List<Complaint> complaints = cp.findByStatus(ComplaintsEnum.Status.open);
-
-        if (complaints.isEmpty()) {
-            throw new DataNotFoundException("No open complaints found");
         }
 
         return ResponseEntity.ok(complaints);
